@@ -15,7 +15,7 @@
  *     - Move to successor if its h(s) < current h(s).
  *     - If stuck at local min (no strictly lower successor), restart randomly.
  *     - Stop when h(s) == 0 or max restarts hit.
- * [ ] Algorithm 2: Implement ONE of (First-Choice HC, Genetic Alg, Simulated Annealing).
+ * [ ] Algorithm 2: Implement First-Choice HC
  *
  * 3. METRICS TRACKING
  * [ ] Track per algorithm search:
@@ -73,6 +73,15 @@ public class FinalProjSubmission {
         Scanner input = new Scanner(System.in);
         System.out.println("Hello! How many random board states should be initialized?");
         randomBoardStates = input.nextInt();
+
+        if (randomBoardStates == 1){
+            visualizer();
+        }
+    }
+
+    //TODO print out 2D array of queens if random board states is 1
+    public static void visualizer(){
+
     }
 
     public static void solveQueens(){
