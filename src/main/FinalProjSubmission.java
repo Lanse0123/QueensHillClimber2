@@ -41,6 +41,7 @@ package main;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+import java.util.Scanner;
 
 public class FinalProjSubmission {
 
@@ -52,11 +53,22 @@ public class FinalProjSubmission {
     public static int bestQueenMapValue = Integer.MAX_VALUE;
     public static boolean solvedConflict = false;
 
+    public static int randomBoardStates;
+
     public static void main(String[] args){
         createNewQueenMap();
 
         solveQueens();
     }
+
+    public static void greetUser(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Hello! How many random board states should be initialized?");
+        randomBoardStates = input.nextInt();
+
+    }
+
+
 
     public static void solveQueens(){
         int currentQueenMapValue;
