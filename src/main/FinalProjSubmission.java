@@ -38,8 +38,6 @@
 
 package main;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -63,7 +61,7 @@ public class FinalProjSubmission {
         greetUser();
 
         for (int i = 0; i < randomBoardStates; i++) {
-            boardList.add(createNewQueenMap());
+            boardList.add(randomizeQueenMap());
         }
 
         solveQueens();
@@ -89,9 +87,9 @@ public class FinalProjSubmission {
 
         while (!solvedConflict){
 
-            currentQueenMap = createNewQueenMap();
+            currentQueenMap = randomizeQueenMap();
 
-            currentQueenMapValue = calculateQueenMapValue();
+            currentQueenMapValue = calculateQueenMapValue(currentQueenMap);
 
             if (currentQueenMapValue == 0){
                 solvedConflict = true;
@@ -109,13 +107,13 @@ public class FinalProjSubmission {
     }
 
     //I tried so hard to make this better than the connect 4 version but oh well its ugly
-    private static int calculateQueenMapValue() {
+    private static int calculateQueenMapValue(boolean[][] queenMap) {
         int conflicts = 0;
 
         for (int row1 = 0; row1 < 8; row1++) {
             for (int col1 = 0; col1 < 8; col1++) {
 
-                if (!currentQueenMap[row1][col1]) {
+                if (!queenMap[row1][col1]) {
                     continue;
                 }
 
@@ -125,7 +123,7 @@ public class FinalProjSubmission {
                             continue;
                         }
 
-                        if (!currentQueenMap[row2][col2]) {
+                        if (!queenMap[row2][col2]) {
                             continue;
                         }
 
@@ -149,8 +147,7 @@ public class FinalProjSubmission {
         return conflicts;
     }
 
-    //TODO - this should be replaced with something other than bogo sort
-    public static boolean[][] createNewQueenMap(){
+    public static boolean[][] randomizeQueenMap(){
         boolean[][] queenMap = new boolean[8][8];
 
         for (int i = 0; i < 8; i++){
