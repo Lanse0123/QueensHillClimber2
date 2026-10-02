@@ -40,6 +40,8 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -50,13 +52,19 @@ public class FinalProjSubmission {
     public static boolean[][] currentQueenMap;
     public static boolean[][] bestQueenMap;
 
+    public static List<Object> boardList = new ArrayList<>();
+
     public static int bestQueenMapValue = Integer.MAX_VALUE;
     public static boolean solvedConflict = false;
 
     public static int randomBoardStates;
 
     public static void main(String[] args){
-        createNewQueenMap();
+        greetUser();
+
+        for (int i = 0; i < randomBoardStates; i++) {
+            boardList.add(createNewQueenMap());
+        }
 
         solveQueens();
     }
@@ -65,17 +73,14 @@ public class FinalProjSubmission {
         Scanner input = new Scanner(System.in);
         System.out.println("Hello! How many random board states should be initialized?");
         randomBoardStates = input.nextInt();
-
     }
-
-
 
     public static void solveQueens(){
         int currentQueenMapValue;
 
         while (!solvedConflict){
 
-            createNewQueenMap();
+            currentQueenMap = createNewQueenMap();
 
             currentQueenMapValue = calculateQueenMapValue();
 
@@ -136,11 +141,13 @@ public class FinalProjSubmission {
     }
 
     //TODO - this should be replaced with something other than bogo sort
-    public static void createNewQueenMap(){
-        currentQueenMap = new boolean[8][8];
+    public static boolean[][] createNewQueenMap(){
+        boolean[][] queenMap = new boolean[8][8];
 
         for (int i = 0; i < 8; i++){
-            currentQueenMap[i][random.nextInt(8)] = true;
+            queenMap[i][random.nextInt(8)] = true;
         }
+
+        return queenMap;
     }
 }
