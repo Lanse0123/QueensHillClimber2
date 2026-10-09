@@ -65,7 +65,6 @@ public class FinalProjSubmission {
 
     }
 
-    //TODO complete this function - alg for random restart
     public static void randomRestart(){
         totalSuccessorsGenerated = 0;
         totalRestarts = 0;
