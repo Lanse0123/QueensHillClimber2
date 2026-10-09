@@ -42,8 +42,12 @@ public class FinalProjSubmission {
 
     public static void initializer(){
         generateBoards();
+
         randomRestart();
-        firstChoice();
+        randomRestartStatistics(totalSuccessorsGenerated, totalRestarts, totalFailures);
+
+        //firstChoice();
+        //firstChoiceStatistics();
 
         if (randomBoardStates == 1){
             visualizer();
@@ -63,7 +67,59 @@ public class FinalProjSubmission {
 
     //TODO complete this function - alg for random restart
     public static void randomRestart(){
+        totalSuccessorsGenerated = 0;
+        totalRestarts = 0;
+        totalFailures = 0;
 
+        for (int i = 0; i < boardList.size(); i++){
+            int[] currentBoard = boardList.get(i).clone();
+            int currentHeuristic = calculateHeuristic(currentBoard);
+
+            int boardRestarts = 0;
+            int steps = 0;
+            int boardSuccessors = 0;
+            boolean solved = false;
+
+            while (boardRestarts < MAX_RESTARTS){
+                if (currentHeuristic == 0){
+                    solved = true;
+                    break;
+                }
+                List<int[]> successors = getSuccessors(currentBoard);
+                boardSuccessors += successors.size();
+
+                int bestSuccessorHeuristic = Integer.MAX_VALUE;
+                int[] bestSuccessor = null;
+
+                for (int j = 0; j < successors.size(); j++){
+                    int[] successor = successors.get(j);
+                    int heuristic = calculateHeuristic(successor);
+                    if(heuristic < bestSuccessorHeuristic){
+                        bestSuccessorHeuristic = heuristic;
+                        bestSuccessor = successor;
+                    }
+
+                }
+                if (bestSuccessorHeuristic < currentHeuristic){
+                    currentBoard = bestSuccessor;
+                    currentHeuristic = bestSuccessorHeuristic;
+                    steps++;
+                }
+                else{
+                    boardRestarts++;
+                    currentBoard = randomizeQueenMap();
+                    currentHeuristic = calculateHeuristic(currentBoard);
+                }
+
+            }
+            if (!solved) {
+                totalFailures++;
+            }
+
+            totalSuccessorsGenerated += boardSuccessors;
+            totalRestarts += boardRestarts;
+
+        }
     }
 
     //TODO complete this function - alg for first choice
@@ -103,8 +159,22 @@ public class FinalProjSubmission {
         return successors;
     }
 
-    //TODO track and display stats
-    public static void statistics(){
+    public static void randomRestartStatistics(int totalSuccessors, int totalRestarts, int totalFailures){
+        System.out.println(randomBoardStates + " puzzles.");
+        System.out.println(MAX_RESTARTS + " restarts allowed per search.");
+
+        int avgSuccessors = totalSuccessors / randomBoardStates;
+        int avgRestarts = totalRestarts / randomBoardStates;
+
+        System.out.println("Hill-climbing with random restart: average search cost/number of " +
+                "successors: " + avgSuccessors + ", average number of restarts required: " +
+                avgRestarts + ", total number of failed searches: " + totalFailures);
+
+
+    }
+
+    //TODO
+    public static void firstChoiceStatistics(){
 
     }
 
