@@ -6,6 +6,11 @@ import java.util.*;
 
 public class FinalProjSubmission {
 
+    public enum ALGORITHM_CHOICE {
+        RANDOM_RESTART,
+        FIRST_CHOICE
+    }
+
     public static Random random = new Random();
 
     public static List<int[]> boardList = new ArrayList<>();
@@ -16,6 +21,7 @@ public class FinalProjSubmission {
     public static int totalRestarts;
     public static int totalFailures;
     public static int totalSteps;
+    public static ALGORITHM_CHOICE algorithmChoice;
 
     public static int randomBoardStates;
 
@@ -35,8 +41,21 @@ public class FinalProjSubmission {
                 //I managed to get a divide by 0 error, so this check is here now
                 if (randomBoardStates < 1) {
                     System.out.println("WRONG, TRY AGAIN.");
-                } else {
+                    continue;
+                }
+
+                System.out.println("Random Restart or First Choice algorithm? ('0' or '1')");
+                int algorithmInput = input.nextInt();
+
+                if (algorithmInput == 0){
+                    algorithmChoice = ALGORITHM_CHOICE.RANDOM_RESTART;
                     inputIsValid = true;
+
+                } else if (algorithmInput == 1){
+                    algorithmChoice = ALGORITHM_CHOICE.FIRST_CHOICE;
+                    inputIsValid = true;
+                } else {
+                    System.out.println("WRONG, TRY AGAIN.");
                 }
 
                 //I managed to get inputMismatchException
@@ -51,11 +70,8 @@ public class FinalProjSubmission {
     public static void initializer(){
         generateBoards();
 
-        randomRestart();
-        randomRestartStatistics(totalSuccessorsGenerated, totalRestarts, totalFailures);
-
-        //firstChoice();
-        //firstChoiceStatistics();
+        solveQueens();
+        outputStatistics(totalSuccessorsGenerated, totalRestarts, totalFailures);
 
         if (randomBoardStates == 1){
             visualizer();
@@ -69,20 +85,26 @@ public class FinalProjSubmission {
     }
 
     public static void visualizer(){
-        int[] board = boardList.getFirst();
+        if (totalRestarts >= MAX_RESTARTS){
+            System.out.println("We failed to find a solution.");
 
-        int startingHeuristic = calculateHeuristic(board);
-        String algorithmSelected = "***ALGORITHM NAME IN BOLD***";
+        } else {
 
-        System.out.println(algorithmSelected);
-        System.out.println("This is the initial placement of the queens \uD83D\uDC85\uD83D\uDC85\uD83D\uDC85");
-        System.out.println("It has " + startingHeuristic + " conflicts");
-        displayBoard(board);
+            int[] board = boardList.getFirst();
 
-        System.out.println("\nWe have found a solution in " + totalSteps + " steps.");
-        System.out.println("This required " + totalRestarts + " random restarts.");
-        System.out.println("The solution is: ");
-        displayBoard(finalBoard);
+            int startingHeuristic = calculateHeuristic(board);
+            String algorithmSelected = "***ALGORITHM NAME IN BOLD***";
+
+            System.out.println(algorithmSelected);
+            System.out.println("This is the initial placement of the queens \uD83D\uDC85\uD83D\uDC85\uD83D\uDC85");
+            System.out.println("It has " + startingHeuristic + " conflicts");
+            displayBoard(board);
+
+            System.out.println("\nWe have found a solution in " + totalSteps + " steps.");
+            System.out.println("This required " + totalRestarts + " random restarts.");
+            System.out.println("The solution is: ");
+            displayBoard(finalBoard);
+        }
     }
 
     public static void displayBoard(int[] board){
@@ -102,7 +124,7 @@ public class FinalProjSubmission {
         }
     }
 
-    public static void randomRestart(){
+    public static void solveQueens(){
         totalSuccessorsGenerated = 0;
         totalRestarts = 0;
         totalFailures = 0;
@@ -133,6 +155,10 @@ public class FinalProjSubmission {
                     if (heuristic < bestSuccessorHeuristic) {
                         bestSuccessorHeuristic = heuristic;
                         bestSuccessor = successor;
+
+                        if (algorithmChoice == ALGORITHM_CHOICE.FIRST_CHOICE){
+                            break;
+                        }
                     }
                 }
 
@@ -157,11 +183,6 @@ public class FinalProjSubmission {
             totalSuccessorsGenerated += boardSuccessors;
             totalRestarts += boardRestarts;
         }
-    }
-
-    //TODO complete this function - alg for first choice
-    public static void firstChoice(){
-
     }
 
     public static int calculateHeuristic(int[] board){
@@ -196,7 +217,7 @@ public class FinalProjSubmission {
         return successors;
     }
 
-    public static void randomRestartStatistics(int totalSuccessors, int totalRestarts, int totalFailures){
+    public static void outputStatistics(int totalSuccessors, int totalRestarts, int totalFailures){
         System.out.println(randomBoardStates + " puzzles.");
         System.out.println(MAX_RESTARTS + " restarts allowed per search.");
 
@@ -206,13 +227,6 @@ public class FinalProjSubmission {
         System.out.println("Hill-climbing with random restart: average search cost/number of " +
                 "successors: " + avgSuccessors + ", average number of restarts required: " +
                 avgRestarts + ", total number of failed searches: " + totalFailures + "\n");
-
-
-    }
-
-    //TODO - ?
-    public static void firstChoiceStatistics(){
-
     }
 
     public static int[] randomBoard() {
