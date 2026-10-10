@@ -47,15 +47,15 @@ public class FinalProjSubmission {
                 System.out.println("Random Restart or First Choice algorithm? ('0' or '1')");
                 int algorithmInput = input.nextInt();
 
-                if (algorithmInput == 0){
-                    algorithmChoice = ALGORITHM_CHOICE.RANDOM_RESTART;
-                    inputIsValid = true;
+                inputIsValid = true;
 
-                } else if (algorithmInput == 1){
-                    algorithmChoice = ALGORITHM_CHOICE.FIRST_CHOICE;
-                    inputIsValid = true;
-                } else {
-                    System.out.println("WRONG, TRY AGAIN.");
+                switch (algorithmInput){
+                    case 0 -> algorithmChoice = ALGORITHM_CHOICE.RANDOM_RESTART;
+                    case 1 -> algorithmChoice = ALGORITHM_CHOICE.FIRST_CHOICE;
+                    default -> {
+                        inputIsValid = false;
+                        System.out.println("WRONG, TRY AGAIN.");
+                    }
                 }
 
                 //I managed to get inputMismatchException
@@ -166,6 +166,7 @@ public class FinalProjSubmission {
                     currentBoard = bestSuccessor;
                     currentHeuristic = bestSuccessorHeuristic;
                     totalSteps++;
+
                 } else {
                     boardRestarts++;
                     currentBoard = randomBoard();
@@ -176,6 +177,7 @@ public class FinalProjSubmission {
                     finalBoard = bestSuccessor.clone();
                 }
             }
+
             if (!solved) {
                 totalFailures++;
             }
@@ -214,6 +216,7 @@ public class FinalProjSubmission {
                 }
             }
         }
+
         return successors;
     }
 
@@ -230,10 +233,12 @@ public class FinalProjSubmission {
     }
 
     public static int[] randomBoard() {
-        int[] queenMap = new int[8];
+        int[] newBoard = new int[8];
+
         for (int col = 0; col < 8; col++) {
-            queenMap[col] = random.nextInt(8) + 1;
+            newBoard[col] = random.nextInt(8) + 1;
         }
-        return queenMap;
+
+        return newBoard;
     }
 }
