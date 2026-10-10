@@ -2,30 +2,20 @@
 
 package main;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class FinalProjSubmission {
 
     public static Random random = new Random();
 
-//    public static boolean[][] currentQueenMap;
-//    public static boolean[][] bestQueenMap;
-
-//    public static int[] currentQueenMap;
-//    public static int[] bestQueenMap;
-
     public static List<int[]> boardList = new ArrayList<>();
-
-//    public static int bestQueenMapValue = Integer.MAX_VALUE;
-//    public static boolean solvedConflict = false;
+    public static int[] finalBoard = new int[8];
 
     public static int MAX_RESTARTS = 1000;
     public static int totalSuccessorsGenerated;
     public static int totalRestarts;
     public static int totalFailures;
+    public static int totalSteps;
 
     public static int randomBoardStates;
 
@@ -56,31 +46,60 @@ public class FinalProjSubmission {
 
     public static void generateBoards() {
         for (int i = 0; i < randomBoardStates; i++) {
-            boardList.add(randomizeQueenMap());
+            boardList.add(randomBoard());
         }
     }
 
-    //TODO complete this function - reference instructions!
     public static void visualizer(){
+        int[] board = boardList.getFirst();
 
+        int startingHeuristic = calculateHeuristic(board);
+        String algorithmSelected = "***ALGORITHM NAME IN BOLD***";
+
+        System.out.println(algorithmSelected);
+        System.out.println("This is the initial placement of the queens \uD83D\uDC85\uD83D\uDC85\uD83D\uDC85");
+        System.out.println("It has " + startingHeuristic + " conflicts");
+        displayBoard(board);
+
+        System.out.println("\nWe have found a solution in " + totalSteps + " steps.");
+        System.out.println("This required " + totalRestarts + " random restarts.");
+        System.out.println("The solution is: ");
+        displayBoard(finalBoard);
+    }
+
+    public static void displayBoard(int[] board){
+        //TODO - remove this top print after done debugging?
+        System.out.println(Arrays.toString(board));
+
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++) {
+                //weirdness checking -1 and equal to 7 because off by 1 and board was upside down
+                if (board[j] - 1 == 7 - i) {
+                    System.out.print("Q");
+                } else {
+                    System.out.print("-");
+                }
+            }
+            System.out.print("\n");
+        }
     }
 
     public static void randomRestart(){
         totalSuccessorsGenerated = 0;
         totalRestarts = 0;
         totalFailures = 0;
+        totalSteps = 0;
 
-        for (int i = 0; i < boardList.size(); i++){
-            int[] currentBoard = boardList.get(i).clone();
+        for (int[] ints : boardList) {
+            int[] currentBoard = ints.clone();
             int currentHeuristic = calculateHeuristic(currentBoard);
 
             int boardRestarts = 0;
-            int steps = 0;
             int boardSuccessors = 0;
             boolean solved = false;
 
-            while (boardRestarts < MAX_RESTARTS){
-                if (currentHeuristic == 0){
+            while (boardRestarts < MAX_RESTARTS) {
+                if (currentHeuristic == 0) {
                     solved = true;
                     break;
                 }
@@ -90,23 +109,21 @@ public class FinalProjSubmission {
                 int bestSuccessorHeuristic = Integer.MAX_VALUE;
                 int[] bestSuccessor = null;
 
-                for (int j = 0; j < successors.size(); j++){
-                    int[] successor = successors.get(j);
+                for (int[] successor : successors) {
                     int heuristic = calculateHeuristic(successor);
-                    if(heuristic < bestSuccessorHeuristic){
+                    if (heuristic < bestSuccessorHeuristic) {
                         bestSuccessorHeuristic = heuristic;
                         bestSuccessor = successor;
                     }
 
                 }
-                if (bestSuccessorHeuristic < currentHeuristic){
+                if (bestSuccessorHeuristic < currentHeuristic) {
                     currentBoard = bestSuccessor;
                     currentHeuristic = bestSuccessorHeuristic;
-                    steps++;
-                }
-                else{
+                    totalSteps++;
+                } else {
                     boardRestarts++;
-                    currentBoard = randomizeQueenMap();
+                    currentBoard = randomBoard();
                     currentHeuristic = calculateHeuristic(currentBoard);
                 }
 
@@ -117,7 +134,7 @@ public class FinalProjSubmission {
 
             totalSuccessorsGenerated += boardSuccessors;
             totalRestarts += boardRestarts;
-
+            finalBoard = currentBoard.clone();
         }
     }
 
@@ -146,8 +163,8 @@ public class FinalProjSubmission {
     public static List<int[]> getSuccessors(int[] board){
         List<int[]> successors = new ArrayList<>();
 
-        for (int col = 0; col < 8; col++){
-            for (int row = 0; row < 8; row++){
+        for (int col = 1; col < 8; col++){
+            for (int row = 1; row < 8; row++){
                 if (row != board[col]){
                     int[] successor = board.clone();
                     successor[col] = row;
@@ -167,98 +184,21 @@ public class FinalProjSubmission {
 
         System.out.println("Hill-climbing with random restart: average search cost/number of " +
                 "successors: " + avgSuccessors + ", average number of restarts required: " +
-                avgRestarts + ", total number of failed searches: " + totalFailures);
+                avgRestarts + ", total number of failed searches: " + totalFailures + "\n");
 
 
     }
 
-    //TODO
+    //TODO - ?
     public static void firstChoiceStatistics(){
 
     }
 
-    public static int[] randomizeQueenMap() {
+    public static int[] randomBoard() {
         int[] queenMap = new int[8];
         for (int col = 0; col < 8; col++) {
-            queenMap[col] = random.nextInt(8);
+            queenMap[col] = random.nextInt(8) + 1;
         }
         return queenMap;
     }
-
-//    public static boolean[][] randomizeQueenMap(){
-//        boolean[][] queenMap = new boolean[8][8];
-//
-//        for (int i = 0; i < 8; i++){
-//            queenMap[i][random.nextInt(8)] = true;
-//        }
-//
-//        return queenMap;
-//    }
-//
-//    public static void solveQueens(){
-//        int currentQueenMapValue;
-//
-//        while (!solvedConflict){
-//
-//            currentQueenMap = randomizeQueenMap();
-//
-//            currentQueenMapValue = calculateQueenMapValue(currentQueenMap);
-//
-//            if (currentQueenMapValue == 0){
-//                solvedConflict = true;
-//            }
-//
-//            if (bestQueenMapValue >= currentQueenMapValue){
-//                //why does cloning 2D arrays suck...
-//                bestQueenMapValue = currentQueenMapValue;
-//                bestQueenMap = new boolean[8][8];
-//                for (int row = 0; row < 8; row++) {
-//                    bestQueenMap[row] = currentQueenMap[row].clone();
-//                }
-//            }
-//        }
-//    }
-
-    //I tried so hard to make this better than the connect 4 version but oh well its ugly
-//    private static int calculateQueenMapValue(boolean[][] queenMap) {
-//        int conflicts = 0;
-//
-//        for (int row1 = 0; row1 < 8; row1++) {
-//            for (int col1 = 0; col1 < 8; col1++) {
-//
-//                if (!queenMap[row1][col1]) {
-//                    continue;
-//                }
-//
-//                for (int row2 = row1; row2 < 8; row2++) {
-//                    for (int col2 = 0; col2 < 8; col2++) {
-//                        if (row2 == row1 && col2 <= col1) {
-//                            continue;
-//                        }
-//
-//                        if (!queenMap[row2][col2]) {
-//                            continue;
-//                        }
-//
-//                        //row
-//                        if (row1 == row2) {
-//                            conflicts++;
-//                        }
-//                        //column
-//                        else if (col1 == col2) {
-//                            conflicts++;
-//                        }
-//                        //diagonal
-//                        else if (Math.abs(row1 - row2) == Math.abs(col1 - col2)) {
-//                            conflicts++;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return conflicts;
-//    }
-
-
 }
