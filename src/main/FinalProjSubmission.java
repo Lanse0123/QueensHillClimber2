@@ -24,9 +24,27 @@ public class FinalProjSubmission {
     }
 
     public static void greetUser(){
-        Scanner input = new Scanner(System.in);
-        System.out.println("Hello! How many random board states should be initialized?");
-        randomBoardStates = input.nextInt();
+        boolean inputIsValid = false;
+
+        while (!inputIsValid) {
+            try {
+                Scanner input = new Scanner(System.in);
+                System.out.println("Hello! How many random board states should be initialized?");
+                randomBoardStates = input.nextInt();
+
+                //I managed to get a divide by 0 error, so this check is here now
+                if (randomBoardStates < 1) {
+                    System.out.println("WRONG, TRY AGAIN.");
+                } else {
+                    inputIsValid = true;
+                }
+
+                //I managed to get inputMismatchException
+            } catch (Exception e){
+                System.out.println("WRONG, TRY AGAIN.");
+            }
+        }
+
         initializer();
     }
 
