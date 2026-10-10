@@ -121,6 +121,7 @@ public class FinalProjSubmission {
                     solved = true;
                     break;
                 }
+
                 List<int[]> successors = getSuccessors(currentBoard);
                 boardSuccessors += successors.size();
 
@@ -133,8 +134,8 @@ public class FinalProjSubmission {
                         bestSuccessorHeuristic = heuristic;
                         bestSuccessor = successor;
                     }
-
                 }
+
                 if (bestSuccessorHeuristic < currentHeuristic) {
                     currentBoard = bestSuccessor;
                     currentHeuristic = bestSuccessorHeuristic;
@@ -145,6 +146,9 @@ public class FinalProjSubmission {
                     currentHeuristic = calculateHeuristic(currentBoard);
                 }
 
+                if (bestSuccessor != null) {
+                    finalBoard = bestSuccessor.clone();
+                }
             }
             if (!solved) {
                 totalFailures++;
@@ -152,7 +156,6 @@ public class FinalProjSubmission {
 
             totalSuccessorsGenerated += boardSuccessors;
             totalRestarts += boardRestarts;
-            finalBoard = currentBoard.clone();
         }
     }
 
