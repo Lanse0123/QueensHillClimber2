@@ -54,13 +54,13 @@ public class FinalProjSubmission {
         solveWithRandomRestart();
         outputStatistics(totalSuccessorsGenerated, totalRestarts, totalFailures, "Random Restart");
         if (randomBoardStates == 1){
-            visualizer();
+            visualizer("Random Restart");
         }
 
         solveWithFirstChoice();
         outputStatistics(totalSuccessorsGenerated, totalRestarts, totalFailures, "First Choice");
         if (randomBoardStates == 1){
-            visualizer();
+            visualizer("First Choice");
         }
     }
 
@@ -70,18 +70,17 @@ public class FinalProjSubmission {
         }
     }
 
-    public static void visualizer(){
+    public static void visualizer(String algorithmName){
         if (totalRestarts >= MAX_RESTARTS){
-            System.out.println("We failed to find a solution.");
+            System.out.println("We failed to find a solution using the " + algorithmName + " algorithm.");
 
         } else {
 
             int[] board = boardList.getFirst();
 
             int startingHeuristic = calculateHeuristic(board);
-            String algorithmSelected = "***ALGORITHM NAME IN BOLD***";
 
-            System.out.println(algorithmSelected);
+            System.out.println("We used the " + algorithmName + " algorithm.");
             System.out.println("This is the initial placement of the queens \uD83D\uDC85\uD83D\uDC85\uD83D\uDC85");
             System.out.println("It has " + startingHeuristic + " conflicts");
             displayBoard(board);
@@ -94,9 +93,6 @@ public class FinalProjSubmission {
     }
 
     public static void displayBoard(int[] board){
-        //TODO - remove this top print after done debugging?
-        System.out.println(Arrays.toString(board));
-
         for (int i = 0; i < 8; i++){
             for (int j = 0; j < 8; j++) {
                 //weirdness checking -1 and equal to 7 because off by 1 and board was upside down
